@@ -1,0 +1,17 @@
+[
+    {
+        "email": "1user@example.com",
+        "hashed_password": "$2b$12$ERBaOTl9eAaYD97s1siWNuAOMwhBZR6E38bJjLFBOZu.LK1Oqo6lO",
+        "referral_count": 1
+    },
+    {
+        "email": "2user@example.com",
+        "hashed_password": "$2b$12$CHpfM3.Q3COyHlQ8Ljbbw.BOL9Ls6v2swgwF1Pg2IumEjiNDxwdKS",
+        "referral_count": 0
+    },
+    {
+        "email": "3user@example.com",
+        "hashed_password": "$2b$12$w3zu6TF7sTjzOkGM9KiSXeJDmX19Y75pLT7vI3TYm9st4cqpYV2Ma",
+        "referral_count": 0
+    }
+]

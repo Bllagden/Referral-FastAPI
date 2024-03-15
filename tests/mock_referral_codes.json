@@ -1,0 +1,20 @@
+[
+    {
+        "code": "90b8c892-86e0-4e98-a65d-eb9bd714de82",
+        "user_id": 1,
+        "expiry_date": "2024-03-25 02:44:27",
+        "is_active": true
+    },
+    {
+        "code": "0a4aede8-175e-473d-ac0b-265df03857ba",
+        "user_id": 1,
+        "expiry_date": "2024-03-25 02:44:28",
+        "is_active": false
+    },
+    {
+        "code": "4a97b342-ef5a-463c-9870-f467e97b7156",
+        "user_id": 2,
+        "expiry_date": "2024-03-25 02:44:28",
+        "is_active": false
+    }
+]
