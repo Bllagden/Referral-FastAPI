@@ -20,11 +20,3 @@ class Users(Base):
         "ReferralCodes",
         back_populates="referrer",
     )
-
-    # rh_referrals: Mapped[list["Referrals"]] = relationship(
-    #     "Referrals",
-    #     back_populates="rh_referrer",
-    # )
-
-    # def __str__(self) -> str:
-    #     return self.username
