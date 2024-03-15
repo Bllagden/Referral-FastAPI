@@ -7,7 +7,7 @@
         {
             // export PYTHONPATH=src
             // pdm run main.py
-            "name": "Booking FastAPI",
+            "name": "Referral",
             "type": "debugpy",
             "request": "launch",
             "program": "main.py", // "${file}"

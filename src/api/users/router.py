@@ -31,7 +31,7 @@ _auth_settings = get_settings(AuthSettings)
 @cache(expire=15)
 async def get_code_by_email(email: str) -> SRCodeByEmail:
     """"""
-    await asyncio.sleep(2)
+    await asyncio.sleep(2)  # для демонстрации кеширования
     async with create_session() as session:
         code_db = await UsersDAO.get_active_code(session, email)
         if not code_db:
@@ -115,7 +115,7 @@ async def get_referrals(
     current_user: Users = Depends(get_current_user),  # noqa: B008)
 ) -> list[SReferrals]:
     """"""
-    await asyncio.sleep(2)
+    await asyncio.sleep(2)  # для демонстрации кеширования
     async with create_session() as session:
         users_db = await UsersDAO.get_referrals_by_id(session, current_user.id)
         if not users_db:
