@@ -5,7 +5,6 @@ from fastapi.security import OAuth2PasswordBearer
 from jose import ExpiredSignatureError, JWTError, jwt
 from sqlalchemy import RowMapping
 
-from dao import UsersDAO
 from db import create_session
 from exceptions import (
     IncorrectTokenFormatException,
@@ -13,6 +12,8 @@ from exceptions import (
     UserIsNotPresentException,
 )
 from settings import AuthSettings, get_settings
+
+from ..dao import UsersDAO
 
 _oauth2_schm = OAuth2PasswordBearer(tokenUrl="users/auth/token")
 _auth_settings = get_settings(AuthSettings)

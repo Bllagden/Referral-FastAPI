@@ -6,8 +6,9 @@ from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
 from redis import asyncio as aioredis
 
-from api import router_ref_codes, router_users, router_users_auth
 from settings import AppSettings, RedisSettings, get_settings
+
+from .routers import router_ref_codes, router_users, router_users_auth
 
 _app_settings = get_settings(AppSettings)
 _redis_settings = get_settings(RedisSettings)

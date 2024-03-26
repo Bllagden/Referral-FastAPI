@@ -6,9 +6,10 @@ from passlib.context import CryptContext
 from sqlalchemy.engine.row import RowMapping
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from dao import UsersDAO
 from exceptions import IncorrectEmailOrPasswordException
 from settings import AuthSettings, get_settings
+
+from ..dao import UsersDAO
 
 _pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 _auth_settings = get_settings(AuthSettings)

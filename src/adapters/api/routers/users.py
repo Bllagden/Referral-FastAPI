@@ -7,7 +7,13 @@ from fastapi.security import OAuth2PasswordRequestForm
 from fastapi_cache.decorator import cache
 from sqlalchemy.exc import IntegrityError
 
-from dao import CodesDAO, ReferralsDAO, UsersDAO
+from core.dao import CodesDAO, ReferralsDAO, UsersDAO
+from core.ref_codes.schemas import SRCodeByEmail
+from core.users.auth import authenticate_user, create_access_token, get_password_hash
+from core.users.dependencies import get_current_user
+from core.users.schemas import SReferrals, SToken, SUserPresent, SUserRegister
+
+#
 from db import create_session
 from db.models import Users
 from exceptions import (
@@ -17,10 +23,11 @@ from exceptions import (
 )
 from settings import AuthSettings, get_settings
 
-from ..ref_codes.schemas import SRCodeByEmail
-from .auth import authenticate_user, create_access_token, get_password_hash
-from .dependencies import get_current_user
-from .schemas import SReferrals, SToken, SUserPresent, SUserRegister
+# from dao import CodesDAO, ReferralsDAO, UsersDAO
+# from ..ref_codes.schemas import SRCodeByEmail
+# from .auth import authenticate_user, create_access_token, get_password_hash
+# from .dependencies import get_current_user
+# from .schemas import SReferrals, SToken, SUserPresent, SUserRegister
 
 router_users = APIRouter(prefix="/users", tags=["Users"])
 router_users_auth = APIRouter(prefix="/users/auth", tags=["Auth & Users"])
