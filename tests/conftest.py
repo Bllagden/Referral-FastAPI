@@ -6,7 +6,7 @@ import pytest
 from httpx import AsyncClient
 from sqlalchemy import insert
 
-from app import create_app as create_fastapi_app
+from adapters.api.app import create_app as create_fastapi_app
 from db import Base, async_engine, async_session_factory
 from db.models import ReferralCodes, Referrals, Users
 from settings import DatabaseSettings, get_settings

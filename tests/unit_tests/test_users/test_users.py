@@ -3,7 +3,7 @@ from contextlib import nullcontext as does_not_raise
 import pytest
 from httpx import AsyncClient
 
-from dao import UsersDAO
+from core.dao import UsersDAO
 from db import create_session
 from db.models import ReferralCodes
 from exceptions import RCodeDoesNotExistsException
