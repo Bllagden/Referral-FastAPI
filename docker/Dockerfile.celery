@@ -1,0 +1,28 @@
+ARG PYTHON_IMAGE=python:3.11.7-slim-bookworm
+
+FROM $PYTHON_IMAGE as build
+
+RUN pip install pdm
+COPY ./src/adapters/celery_t/pyproject.toml .
+RUN pdm lock
+RUN pdm export -f requirements -o requirements.txt
+
+FROM $PYTHON_IMAGE
+ENV PYTHONPATH=$PYTHONPATH:/app/src \
+    PATH=$PATH:/home/app/.local/bin \
+    PYTHONUNBUFFERED=1
+
+RUN addgroup --gid 2000 app && adduser --gid 2000 --uid 1000 app
+USER app
+
+WORKDIR /app
+
+COPY --from=build ./requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt --user --no-dependencies
+
+COPY ./src/adapters/celery_t ./src/adapters/celery_t
+COPY ./src/settings.py ./src
+
+USER root
+RUN rm ./src/adapters/celery_t/pyproject.toml
+USER app

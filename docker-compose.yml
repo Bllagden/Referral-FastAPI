@@ -11,6 +11,7 @@ services:
       - 443:443
     links:
       - referral
+      - flower
 
   postgres-db:
     image: postgres:16
@@ -33,6 +34,7 @@ services:
     image: referral_app_i
     build:
       context: .
+      dockerfile: "./docker/Dockerfile"
     container_name: referral_app
     env_file:
       - .env.prod
@@ -42,8 +44,37 @@ services:
     # ports:
     #   - 7777:8000
     # restart: always
-                # command: bash -c "sleep 5 && alembic upgrade head && uvicorn app:create_app --factory --host 0.0.0.0"
-    command: bash -c "./postgres_waiting.sh && alembic upgrade head && uvicorn app:create_app --factory --host 0.0.0.0"
+                # command: bash -c "sleep 5 && alembic upgrade head && uvicorn adapters.api.app:create_app --factory --host 0.0.0.0"
+    command: bash -c "./postgres_waiting.sh && alembic upgrade head && uvicorn adapters.api.app:create_app --factory --host 0.0.0.0"
+
+  celery:
+    image: referral_celery_i
+    build:
+      context: .
+      dockerfile: "./docker/Dockerfile.celery"
+    container_name: referral_celery
+    env_file:
+      - .env.prod
+    depends_on:
+      - referral
+      - redis
+    command: bash -c "celery --app=src.adapters.celery_t.main:celery_app worker -l INFO"
+
+  flower:
+    image: referral_flower_i
+    build:
+      context: .
+      dockerfile: "./docker/Dockerfile.celery"
+    container_name: referral_flower
+    env_file:
+      - .env.prod
+    depends_on:
+      - referral
+      - redis
+      - celery
+    # ports:
+    #   - 5555:5555
+    command: bash -c "celery --app=src.adapters.celery_t.main:celery_app flower --url_prefix=/flower"
 
 volumes:
   referral_pg_data:

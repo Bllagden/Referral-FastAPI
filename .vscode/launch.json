@@ -20,10 +20,10 @@
         {
             // export PYTHONPATH=src
             //
-            // pdm run celery -A src.adapters.celery.main:celery_app worker --loglevel=INFO
-            // pdm run celery -A src.adapters.celery.main:celery_app worker --loglevel=INFO --pool=solo	(Windows)
+            // pdm run celery -A src.adapters.celery_t.main:celery_app worker --loglevel=INFO
+            // pdm run celery -A src.adapters.celery_t.main:celery_app worker --loglevel=INFO --pool=solo	(Windows)
             // or
-            // celery -A src.adapters.celery.main:celery_app worker --loglevel=INFO --pool=solo
+            // celery -A src.adapters.celery_t.main:celery_app worker --loglevel=INFO --pool=solo
             "name": "Celery Worker",
             "type": "debugpy",
             "request": "launch",
@@ -31,7 +31,7 @@
             "console": "integratedTerminal",
             "args": [
                 "-A",
-                "src.adapters.celery.main:celery_app",
+                "src.adapters.celery_t.main:celery_app",
                 "worker",
                 "--loglevel=INFO",
                 "--pool=solo" // Windows
@@ -41,9 +41,9 @@
         {   
             // export PYTHONPATH=src
             //
-            // pdm run celery -A src.adapters.celery.main:celery_app flower
+            // pdm run celery -A src.adapters.celery_t.main:celery_app flower
             // or
-            // celery -A src.adapters.celery.main:celery_app flower
+            // celery -A src.adapters.celery_t.main:celery_app flower
             "name": "Celery Flower",
             "type": "debugpy",
             "request": "launch",
@@ -51,7 +51,7 @@
             "console": "integratedTerminal",
             "args": [
                 "-A",
-                "src.adapters.celery.main:celery_app",
+                "src.adapters.celery_t.main:celery_app",
                 "flower"
             ],
             "env": {"PYTHONPATH": "src"},

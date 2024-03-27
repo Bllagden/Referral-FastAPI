@@ -8,6 +8,6 @@ celery_app = Celery(
     "tasks",
     broker=f"redis://{_redis_settings.host}:{_redis_settings.port}",
     include=[
-        "adapters.celery.tasks",
+        "adapters.celery_t.tasks",
     ],
 )

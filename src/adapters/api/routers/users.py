@@ -7,7 +7,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from fastapi_cache.decorator import cache
 from sqlalchemy.exc import IntegrityError
 
-from adapters.celery import send_referral_registration_to_referrer
+from adapters.celery_t import send_referral_registration_to_referrer
 from core.dao import CodesDAO, ReferralsDAO, UsersDAO
 from core.ref_codes.schemas import SRCodeByEmail
 from core.users.auth import authenticate_user, create_access_token, get_password_hash
