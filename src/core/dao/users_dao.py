@@ -34,7 +34,7 @@ class UsersDAO(BaseDAO):
         return None
 
     @classmethod
-    async def read_users_me(
+    async def get_cur_user(
         cls,
         session: AsyncIterator[AsyncSession],
         user_id: int,

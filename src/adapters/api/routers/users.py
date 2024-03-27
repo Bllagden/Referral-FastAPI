@@ -7,13 +7,18 @@ from fastapi.security import OAuth2PasswordRequestForm
 from fastapi_cache.decorator import cache
 from sqlalchemy.exc import IntegrityError
 
+from adapters.celery import send_referral_registration_to_referrer
 from core.dao import CodesDAO, ReferralsDAO, UsersDAO
 from core.ref_codes.schemas import SRCodeByEmail
 from core.users.auth import authenticate_user, create_access_token, get_password_hash
 from core.users.dependencies import get_current_user
-from core.users.schemas import SReferrals, SToken, SUserPresent, SUserRegister
-
-#
+from core.users.schemas import (
+    SReferrals,
+    SToken,
+    SUserPresent,
+    SUserRegister,
+    SUserRegisterResponce,
+)
 from db import create_session
 from db.models import Users
 from exceptions import (
@@ -22,12 +27,6 @@ from exceptions import (
     UserAlreadyExistsException,
 )
 from settings import AuthSettings, get_settings
-
-# from dao import CodesDAO, ReferralsDAO, UsersDAO
-# from ..ref_codes.schemas import SRCodeByEmail
-# from .auth import authenticate_user, create_access_token, get_password_hash
-# from .dependencies import get_current_user
-# from .schemas import SReferrals, SToken, SUserPresent, SUserRegister
 
 router_users = APIRouter(prefix="/users", tags=["Users"])
 router_users_auth = APIRouter(prefix="/users/auth", tags=["Auth & Users"])
@@ -49,47 +48,56 @@ async def get_code_by_email(email: str) -> SRCodeByEmail:
         )
 
 
-@router_users.post("/register")
-async def register_user(user_data: SUserRegister) -> dict | None:
+@router_users.post("/register", response_model=SUserRegisterResponce)
+async def register_user(user_data: SUserRegister) -> SUserRegisterResponce:
     hashed_password = get_password_hash(user_data.password)
-    res = {
-        "status": 200,
-        "code_info": "Реферальный код не существует либо не активен",
-        "code": None,
-    }
-    """"""
-    async with create_session() as session:
-        if user_data.referrer_code:
-            ref_code = await CodesDAO.find_one_or_none(
-                session,
-                code=user_data.referrer_code,
-                is_active=True,
-            )
-            if ref_code is not None and ref_code.expiry_date >= datetime.now(tz=UTC):
-                await UsersDAO.increment_referral_count(
-                    session,
-                    ref_code.user_id,
-                )
-                res["code_info"] = "Реферальный код применен"
-                res["code"] = ref_code.code
+    code_info = "Реферальный код не существует либо не активен"
+    code = None
 
+    async with create_session() as session:
         try:
             new_user = await UsersDAO.add(
                 session,
                 email=user_data.email,
                 hashed_password=hashed_password,
             )
-            if user_data.referrer_code and ref_code is not None:
-                await ReferralsDAO.add(
-                    session,
-                    referral_id=new_user.id,
-                    referrer_id=ref_code.user_id,
-                )
-
         except IntegrityError as err:
             raise UserAlreadyExistsException from err
 
-    return res
+        is_valid_ref_code = False
+        if user_data.referrer_code:
+            ref_code = await CodesDAO.find_one_or_none(
+                session,
+                code=user_data.referrer_code,
+                is_active=True,
+            )
+            if (ref_code is not None) and ref_code.expiry_date > datetime.now(tz=UTC):
+                is_valid_ref_code = True
+
+        if is_valid_ref_code:
+            referrer = await UsersDAO.find_one_or_none(
+                session,
+                id=ref_code.user_id,
+            )
+            await UsersDAO.increment_referral_count(
+                session,
+                referrer.id,  # ref_code.user_id
+            )
+            await ReferralsDAO.add(
+                session,
+                referral_id=new_user.id,
+                referrer_id=referrer.id,  # ref_code.user_id
+            )
+
+            # celery
+            send_referral_registration_to_referrer.delay(
+                user_data.email,
+                referrer.email,
+            )
+
+            code_info = "Реферальный код применен"
+            code = ref_code.code
+    return SUserRegisterResponce(status=200, code_info=code_info, code=code)
 
 
 @router_users_auth.post("/token")
@@ -108,12 +116,12 @@ async def login_for_access_token(
 
 
 @router_users_auth.get("/me", response_model=SUserPresent)
-async def read_users_me(
+async def get_cur_user(
     current_user: Users = Depends(get_current_user),  # noqa: B008
 ) -> SUserPresent:
     """"""
     async with create_session() as session:
-        return await UsersDAO.read_users_me(session, current_user.id)
+        return await UsersDAO.get_cur_user(session, current_user.id)
 
 
 @router_users_auth.get("/me/referrals", response_model=list[SReferrals])

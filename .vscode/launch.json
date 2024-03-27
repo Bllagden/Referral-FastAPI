@@ -6,13 +6,55 @@
     "configurations": [
         {
             // export PYTHONPATH=src
+            //
             // pdm run main.py
-            "name": "Referral",
+            // or
+            // py main.py
+            "name": "Referral FastAPI",
             "type": "debugpy",
             "request": "launch",
             "program": "main.py", // "${file}"
             "console": "integratedTerminal",
             "env": {"PYTHONPATH": "src"},
         },
+        {
+            // export PYTHONPATH=src
+            //
+            // pdm run celery -A src.adapters.celery.main:celery_app worker --loglevel=INFO
+            // pdm run celery -A src.adapters.celery.main:celery_app worker --loglevel=INFO --pool=solo	(Windows)
+            // or
+            // celery -A src.adapters.celery.main:celery_app worker --loglevel=INFO --pool=solo
+            "name": "Celery Worker",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/.venv/Scripts/celery.exe",
+            "console": "integratedTerminal",
+            "args": [
+                "-A",
+                "src.adapters.celery.main:celery_app",
+                "worker",
+                "--loglevel=INFO",
+                "--pool=solo" // Windows
+            ],
+            "env": {"PYTHONPATH": "src"},
+        },
+        {   
+            // export PYTHONPATH=src
+            //
+            // pdm run celery -A src.adapters.celery.main:celery_app flower
+            // or
+            // celery -A src.adapters.celery.main:celery_app flower
+            "name": "Celery Flower",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/.venv/Scripts/celery.exe",
+            "console": "integratedTerminal",
+            "args": [
+                "-A",
+                "src.adapters.celery.main:celery_app",
+                "flower"
+            ],
+            "env": {"PYTHONPATH": "src"},
+        }
     ]
 }

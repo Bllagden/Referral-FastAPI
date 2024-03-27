@@ -51,3 +51,12 @@ class RedisSettings(BaseSettings):
 
     host: str
     port: str
+
+
+class SMTPSettings(BaseSettings):
+    model_config = SettingsConfigDict(str_strip_whitespace=True, env_prefix="smtp_")
+
+    host: str
+    port: str
+    user: str
+    password: str

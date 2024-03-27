@@ -14,6 +14,12 @@ class SUserRegister(BaseModel):
     referrer_code: None | str = None
 
 
+class SUserRegisterResponce(BaseModel):
+    status: int
+    code_info: str
+    code: None | str = None
+
+
 class SUserPresent(BaseModel):
     id: int
     email: str
