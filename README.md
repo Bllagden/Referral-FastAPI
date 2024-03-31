@@ -33,13 +33,13 @@
 ## Отличия от Booking-FastAPI
 https://github.com/Bllagden/Booking-FastAPI
 - Использование `JWT` и `Oauth 2.0` (в Booking-FastAPI `JWT` и `cookies`);
-- Улучшена работа сессий `SQLAlchemy` (их создание вынесено в отдельную функцию).
+- Улучшена работа сессий `SQLAlchemy` (их создание вынесено в отдельную функцию);
 - Улучшена структура проекта (добавлены директории `adapters` и `core`);
+- Внедрено версионирование API.
 
 
 ## Что можно доработать
 - Cистему авторизации (сейчас у всех аутентифицированных пользователей одинаковые права);
-- Внедрить версионирование API;
 - Полностью покрыть тестами.
 
 
@@ -149,7 +149,7 @@ print(b64encode(token_bytes(32)).decode())
 
 8) Доступ:
     
-    API: http://127.0.0.1:8000/docs
+    API: http://127.0.0.1:8000/v1/docs или http://127.0.0.1:8000/latest/docs
     <br />
     Flower: http://127.0.0.1:5555
 
@@ -177,7 +177,7 @@ print(b64encode(token_bytes(32)).decode())
 
 4) Доступ:
     
-    API: `http://YOUR_IP/docs`
+    API: `http://YOUR_IP/v1/docs` или `http://YOUR_IP/latest/docs`
     <br />
     Flower: `http://YOUR_IP/flower/`
 

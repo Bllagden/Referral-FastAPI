@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
+from fastapi_versioning import VersionedFastAPI
 from redis import asyncio as aioredis
 
 from settings import AppSettings, RedisSettings, get_settings
@@ -26,10 +27,13 @@ async def _lifespan(app: FastAPI):  # noqa: ANN202, ARG001
 
 
 def create_app() -> FastAPI:
-    app = FastAPI(lifespan=_lifespan)
+    app = FastAPI(
+        title="Referral-FastAPI",
+        root_path="/api",
+    )
     _include_routers(app)
     _add_middlewares(app)
-    return app
+    return _versioned_fastapi(app)
 
 
 def _include_routers(app: FastAPI) -> None:
@@ -51,4 +55,14 @@ def _add_middlewares(app: FastAPI) -> None:
             "Access-Control-Allow-Origin",
             "Authorization",
         ],
+    )
+
+
+def _versioned_fastapi(app: FastAPI) -> FastAPI:
+    return VersionedFastAPI(
+        app,
+        lifespan=_lifespan,
+        enable_latest=True,
+        version_format="{major}",
+        prefix_format="/v{major}",
     )

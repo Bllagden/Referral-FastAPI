@@ -22,11 +22,6 @@ from exceptions import (
     RCodeGenLifetimeException,
 )
 
-# from dao import CodesDAO
-# from ..users.dependencies import get_current_user
-# from .codes import create_expiry_date, generate_ref_code, valid_ref_code_data
-# from .schemas import SRCode, SRCodeActivate, SRCodeCreate, SRCodeDeactivate
-
 router_ref_codes = APIRouter(prefix="/codes", tags=["Referral codes"])
 
 

@@ -5,6 +5,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi_cache.decorator import cache
+from fastapi_versioning import version
 from sqlalchemy.exc import IntegrityError
 
 from adapters.celery_t import send_referral_registration_to_referrer
@@ -49,6 +50,7 @@ async def get_code_by_email(email: str) -> SRCodeByEmail:
 
 
 @router_users.post("/register", response_model=SUserRegisterResponce)
+@version(1)
 async def register_user(user_data: SUserRegister) -> SUserRegisterResponce:
     hashed_password = get_password_hash(user_data.password)
     code_info = "Реферальный код не существует либо не активен"
